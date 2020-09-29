@@ -1,0 +1,30 @@
+body {
+    margin: 0;
+    position: relative;
+}
+
+.none {
+    display: none;
+}
+
+.addClass {
+    position: absolute;
+    top: 150px;
+    right: 210px
+}
+
+.canvas {
+    position: absolute;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.p_canvas {
+    position: absolute;
+    z-index: 0
+}
+
+.name {
+    width: 230px;
+    height: 30px;
+}
