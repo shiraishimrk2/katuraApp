@@ -143,6 +143,7 @@ phina.define("TutorialScene", {
             tutorial.setInteractive(true);
             tutorial.onpointstart = function () {
                 tutorial.remove();
+                start();
             }
         };
 
@@ -155,7 +156,6 @@ phina.define("TutorialScene", {
         }).addChildTo(this);
 
         // if()で今までのゲージをクリアしたか確認 yesならstart起動
-        start();
 
         var timerId = 0;
         // var power_counter = 0;
@@ -170,7 +170,7 @@ phina.define("TutorialScene", {
                 console.log(power_counter);
                 return this.power_counter;
             };
-            timerId = setTimeout(stop, 5000);
+            timerId = setTimeout(stop, 3000);
         };
 
         var self = this;
@@ -256,7 +256,7 @@ phina.define("Main", {
         game_counter = 0;
 
         var n_canvas = document.createElement('canvas');
-        n_canvas.classList.add('canvas');
+        n_canvas.classList.add('n_canvas');
         n_canvas.width = SCREEN_WIDTH;
         n_canvas.height = SCREEN_HEIGHT;
         document.body.appendChild(n_canvas);
@@ -264,11 +264,12 @@ phina.define("Main", {
         var tamesi_List = document.querySelectorAll('canvas');
         tamesi_List[0].classList.add('p_canvas');
 
-        function motionAnime(canvas, canvas_config, motionFunc, motion_config, outside_process) {
-            var canvas = document.querySelector('.canvas');
-            var ctx = canvas.getContext('2d');
+        function motionAnime(ball_canvas, canvas_config, motionFunc, motion_config, outside_process) {
+            var ball_canvas = document.querySelector('.n_canvas');
+            // console.log(ball_canvas);
+            var ctx = ball_canvas.getContext('2d');
 
-            if (!canvas) {
+            if (!ball_canvas) {
                 console.log('wrong canvas_id');
                 return false;
             }
@@ -279,10 +280,12 @@ phina.define("Main", {
             }
 
             // // 1 canvasの座標の原点を左上から左下へ移動、およびy軸反転
-            canvasInitialize(canvas);
+            canvasInitialize(ball_canvas);
 
-            function canvasInitialize(canvas) {
-                ctx.translate(0, canvas.height);
+            function canvasInitialize(ball_canvas) {
+                var ctx = ball_canvas.getContext('2d');
+
+                ctx.translate(0, ball_canvas.height);
                 ctx.scale(1, -1);
             }
 
@@ -295,12 +298,12 @@ phina.define("Main", {
             //時間
             motion_config.t = motion_config.t0;
 
-            // アニメ~ション
+            // アニメ-ション
             setInterval(anime, motion_config.interval_s * 50);
 
             function anime() {
                 //消去
-                canvasReset(canvas, canvas_config);
+                canvasReset(ball_canvas, canvas_config);
 
                 // 3白のボールを描画
                 drawBall(ctx, motion_config);
@@ -311,13 +314,13 @@ phina.define("Main", {
 
                 // はみ出しの時の処理
                 if (outside_process) {
-                    outside_process(canvas, motion_config);
+                    outside_process(ball_canvas, motion_config);
                 }
 
-                function canvasReset(canvas, canvas_config) {
+                function canvasReset(ball_canvas, canvas_config) {
                     ctx.globalAlpha = canvas_config.globalAlpha;
                     ctx.fillStyle = canvas_config.fillStyle;
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillRect(0, 0, ball_canvas.width, ball_canvas.height);
                 }
 
                 function drawBall(ctx, motion_config) {
@@ -331,8 +334,8 @@ phina.define("Main", {
             }
         }
         (function () {
-            var obliqueProjectionAnime = function (canvas, canvas_config, motion_config, outside_process) {
-                motionAnime(canvas, canvas_config, obliqueProjection, motion_config, outside_process);
+            var obliqueProjectionAnime = function (ball_canvas, canvas_config, motion_config, outside_process) {
+                motionAnime(ball_canvas, canvas_config, obliqueProjection, motion_config, outside_process);
 
                 function obliqueProjection(motion_config) {
                     var ball_pos = { //初期化
@@ -346,7 +349,7 @@ phina.define("Main", {
                     return ball_pos;
                 }
             };
-            obliqueProjectionAnime('canvas', {
+            obliqueProjectionAnime('ball_canvas', {
                     // globalAlpha: 5,透明軌跡
                     fillStyle: 'transparent'
                 }, {
@@ -370,7 +373,7 @@ phina.define("Main", {
                     result: 0
                 },
                 // console.log(canvas.v0),
-                function (canvas, motion_config) {
+                function (ball_canvas, motion_config) {
                     // 画面動かす
                     // if (motion_config.ball_config.ball_pos.x > canvas.width / 2) {
                     //     var tamesi = canvas.getContext('2d');
@@ -474,7 +477,7 @@ phina.define("Result", {
                     var data = doc.data();
                     var ranking = number++;
                     var all_ran_n = ranking;
-                    var all_ran_t = `${data.username}    Score : ${data.score}`;
+                    var all_ran_t = `${data.username},Score : ${data.score}`;
                     var all_ranking = all_ran_n + "   " + all_ran_t;
                     //ランクインか判別して色を変更する
                     var you_id = localStorage.getItem("u-id");
@@ -511,9 +514,7 @@ phina.define("Result", {
             .where("score", ">", num)
             .get()
             .then((snap) => {
-                var y_ran_msg1 = "貴方は";
-                var y_ran_msg2 = "位です";
-                var y_ran_msg = y_ran_msg1 + (size = snap.size + 1) + y_ran_msg2;
+                var y_ran_msg = "あなたは" + (size = snap.size + 1) + "位です";
                 Label({
                         text: y_ran_msg,
                         fontSize: 18,

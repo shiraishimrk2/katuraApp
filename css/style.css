@@ -13,7 +13,7 @@ body {
     right: 210px
 }
 
-.canvas {
+.n_canvas {
     position: absolute;
     z-index: 1;
     pointer-events: none;
