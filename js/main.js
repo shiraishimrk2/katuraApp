@@ -115,8 +115,8 @@ phina.define("Form", {
                     console.log(error);
                 });
             if (form.classList.contains("form") == true) {
-                form.classList.remove("addClass");
                 form.classList.add("none");
+                form.classList.remove("addClass");
             }
             self.exit();
         });
@@ -250,8 +250,7 @@ phina.define("Main", {
             background_box.setInteractive(false);
             clearTimeout(timerId);
             // console.log(timerId);
-            // move();
-        }
+        };
 
         game_counter = 0;
 
@@ -272,12 +271,12 @@ phina.define("Main", {
             if (!ball_canvas) {
                 console.log('wrong canvas_id');
                 return false;
-            }
+            };
 
             if (!motion_config.ball_config) {
                 console.log('Not ball_config in motion_config.');
                 return false;
-            }
+            };
 
             // // 1 canvasの座標の原点を左上から左下へ移動、およびy軸反転
             canvasInitialize(ball_canvas);
@@ -287,13 +286,13 @@ phina.define("Main", {
 
                 ctx.translate(0, ball_canvas.height);
                 ctx.scale(1, -1);
-            }
+            };
 
             // ball位置初期化
             motion_config.ball_config.ball_pos = {
                 x: motion_config.ball_config.ball_pos0.x,
                 y: motion_config.ball_config.ball_pos0.y
-            }
+            };
 
             //時間
             motion_config.t = motion_config.t0;
@@ -315,13 +314,13 @@ phina.define("Main", {
                 // はみ出しの時の処理
                 if (outside_process) {
                     outside_process(ball_canvas, motion_config);
-                }
+                };
 
                 function canvasReset(ball_canvas, canvas_config) {
                     ctx.globalAlpha = canvas_config.globalAlpha;
                     ctx.fillStyle = canvas_config.fillStyle;
                     ctx.fillRect(0, 0, ball_canvas.width, ball_canvas.height);
-                }
+                };
 
                 function drawBall(ctx, motion_config) {
                     ctx.globalAlpha = motion_config.ball_config.globalAlpha;
@@ -330,9 +329,9 @@ phina.define("Main", {
                     ctx.closePath();
                     ctx.fillStyle = motion_config.ball_config.fillStyle;
                     ctx.fill();
-                }
-            }
-        }
+                };
+            };
+        };
         (function () {
             var obliqueProjectionAnime = function (ball_canvas, canvas_config, motion_config, outside_process) {
                 motionAnime(ball_canvas, canvas_config, obliqueProjection, motion_config, outside_process);
@@ -347,7 +346,7 @@ phina.define("Main", {
 
                     // console.log(ball_pos);
                     return ball_pos;
-                }
+                };
             };
             obliqueProjectionAnime('ball_canvas', {
                     // globalAlpha: 5,透明軌跡
@@ -410,6 +409,14 @@ phina.define("Main", {
                     // else {
                     //     console.log("追加されませんでした");
                     // };
+
+                    //                     var timerId = 0;
+                    //                     // var power_counter = 0;
+
+                    //                     if (motion_config.ball_config.ball_pos.y == 0) {
+
+                    // }
+                    //                     timerId = setTimeout(stop, 3000);
 
                 });
         })();
@@ -530,9 +537,9 @@ phina.define("Result", {
             .then((doc) => {
                 if (doc.exists) {
                     var data = doc.data();
-                    var ttt = `${data.username}, score:${data.score}`;
+                    var ranking = `${data.username}, score:${data.score}`;
                     Label({
-                            text: ttt,
+                            text: ranking,
                             fontSize: 18,
                             fill: "black",
                         })
@@ -548,12 +555,13 @@ phina.define("Result", {
 
         var self = this;
         Button({
-            text: '➡',
+            text: 'もう一度遊ぶ',
             fontSize: 13,
-            width: 50,
+            width: 100,
             height: 50,
             fill: 'gray'
-        }).addChildTo(this).setPosition(this.gridX.span(15), this.gridY.span(14.5)).onpush = function () {
+        }).addChildTo(this).setPosition(this.gridX.span(14), this.gridY.span(14.5)).onpush = function () {
+            power_counter = 0;
             self.exit();
         };
     }
@@ -563,7 +571,7 @@ phina.main(function () {
     var app = GameApp({
         // query: '#canvas',
         // Start から開始
-        startLabel: 'title',
+        startLabel: 'result',
         fit: false,
         width: SCREEN_WIDTH,
         height: SCREEN_HEIGHT,
@@ -593,9 +601,8 @@ phina.main(function () {
             {
                 className: 'Result',
                 label: 'result',
-                nextLabel: 'title',
+                nextLabel: 'tutorialscene',
             },
-
         ]
     });
     // 実行
