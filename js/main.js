@@ -21,7 +21,7 @@ const db = firebase.firestore();
 const collection = db.collection("users");
 //-------------------------------------------------------
 
-var ASSETS = {
+const ASSETS = {
     image: {
         bg_top: 'img/title.png',
         katura: 'img/katura.png',
@@ -42,7 +42,6 @@ var ASSETS = {
                 "cols": 7,
                 "rows": 1,
             },
-
             "animations": {
                 "swing": {
                     "frames": [0, 1, 2, 3, 4, 5, 6, ],
@@ -54,8 +53,8 @@ var ASSETS = {
     }
 };
 
-var SCREEN_WIDTH = screen.width;
-var SCREEN_HEIGHT = screen.height;
+const SCREEN_WIDTH = screen.width;
+const SCREEN_HEIGHT = screen.height;
 
 var power_counter = 0;
 var game_counter = 0;
@@ -73,7 +72,7 @@ phina.define("Title", {
             .setPosition(this.gridX.center(), this.gridY.span(13.5))
             .tweener.fadeOut(1000).fadeIn(500).setLoop(true).play();
         this.on('pointend', function () {
-            var form = document.querySelector(".form");
+            const form = document.querySelector(".form");
             if (form.classList.contains("form") == true) {
                 form.classList.remove("none");
                 form.classList.add("addClass");
@@ -89,13 +88,13 @@ phina.define("Form", {
         this.superInit(option);
         Sprite('bg', SCREEN_WIDTH, SCREEN_HEIGHT).addChildTo(this).setPosition(this.gridX.center(), this.gridY.center());
 
-        var formimg = Formimg().addChildTo(this);
+        const formimg = Formimg().addChildTo(this);
         formimg.x = this.gridX.center();
         formimg.y = this.gridY.center();
         formimg.width = 550;
         formimg.height = 300;
 
-        var self = this;
+        const self = this;
         var form = document.querySelector(".addClass");
 
         //User登録
@@ -132,9 +131,9 @@ phina.define("TutorialScene", {
         this.bat_bg = Sprite("bg_tuto").addChildTo(this);
         this.bat_bg.origin.set(0, 0);
 
-        var firebase = 0;
+        const firebase = 0;
         if (firebase == 0) {
-            var tutorial = Tutorial().addChildTo(this);
+            const tutorial = Tutorial().addChildTo(this);
             tutorial.x = this.gridX.center();
             tutorial.y = this.gridY.center();
             tutorial.width = 550;
@@ -147,7 +146,7 @@ phina.define("TutorialScene", {
             }
         };
 
-        var background_box = RectangleShape({
+        const background_box = RectangleShape({
             width: this.width * 2,
             height: this.height * 2,
             // fill: 'rgba(255, 255, 255, .4)',
@@ -157,7 +156,7 @@ phina.define("TutorialScene", {
 
         // if()で今までのゲージをクリアしたか確認 yesならstart起動
 
-        var timerId = 0;
+        let timerId = 0;
         // var power_counter = 0;
 
         function start() {
@@ -205,19 +204,19 @@ phina.define("Main", {
         this.bg2.setPosition(SCREEN_WIDTH * 2, 0);
 
         // ------------------------------------------------------------
-        var animation = S_animation().addChildTo(this);
+        const animation = S_animation().addChildTo(this);
         animation.width = 155;
         animation.height = 188;
 
-        var anim = FrameAnimation('animation_ss').attachTo(animation);
+        const anim = FrameAnimation('animation_ss').attachTo(animation);
         anim.gotoAndPlay('swing');
-        animation.x = 170;
-        animation.y = 250;
+        animation.x = 175;
+        animation.y = 200;
 
         //---------------------------------------------------------------
 
 
-        var background_box = RectangleShape({
+        const background_box = RectangleShape({
             width: this.width * 2,
             height: this.height * 2,
             // fill: 'rgba(255, 255, 255, .4)',
@@ -264,11 +263,11 @@ phina.define("Main", {
         tamesi_List[0].classList.add('p_canvas');
 
         function motionAnime(ball_canvas, canvas_config, motionFunc, motion_config, outside_process) {
-            var ball_canvas = document.querySelector('.n_canvas');
-            // console.log(ball_canvas);
-            var ctx = ball_canvas.getContext('2d');
+            var test_canvas = n_canvas;  //test_canvasを治す
+            // console.log(test_canvas);
+            const ctx = test_canvas.getContext('2d');
 
-            if (!ball_canvas) {
+            if (!test_canvas) {
                 console.log('wrong canvas_id');
                 return false;
             };
@@ -279,11 +278,9 @@ phina.define("Main", {
             };
 
             // // 1 canvasの座標の原点を左上から左下へ移動、およびy軸反転
-            canvasInitialize(ball_canvas);
+            canvasInitialize(test_canvas);
 
             function canvasInitialize(ball_canvas) {
-                var ctx = ball_canvas.getContext('2d');
-
                 ctx.translate(0, ball_canvas.height);
                 ctx.scale(1, -1);
             };
@@ -302,10 +299,10 @@ phina.define("Main", {
 
             function anime() {
                 //消去
-                canvasReset(ball_canvas, canvas_config);
+                canvasReset(n_canvas, canvas_config);
 
                 // 3白のボールを描画
-                drawBall(ctx, motion_config);
+                drawkatura(ctx, motion_config);
 
                 // 4 計算
                 motion_config.ball_config.ball_pos = motionFunc(motion_config);
@@ -316,20 +313,20 @@ phina.define("Main", {
                     outside_process(ball_canvas, motion_config);
                 };
 
-                function canvasReset(ball_canvas, canvas_config) {
+                function canvasReset(n_canvas, canvas_config) {
+                    // console.log(n_canvas);
+                    // console.log(ctx);
                     ctx.globalAlpha = canvas_config.globalAlpha;
                     ctx.fillStyle = canvas_config.fillStyle;
-                    ctx.fillRect(0, 0, ball_canvas.width, ball_canvas.height);
+                    ctx.clearRect(0, 0, n_canvas.width, n_canvas.height);
                 };
-
-                function drawBall(ctx, motion_config) {
-                    ctx.globalAlpha = motion_config.ball_config.globalAlpha;
-                    ctx.beginPath();
-                    ctx.arc(motion_config.ball_config.ball_pos.x, motion_config.ball_config.ball_pos.y, motion_config.ball_config.r, 0, 2 * Math.PI);
-                    ctx.closePath();
-                    ctx.fillStyle = motion_config.ball_config.fillStyle;
-                    ctx.fill();
+                
+                function drawkatura(ctx, motion_config) {
+                const dura = new Image();
+                dura.src = "./img/katura2.png";
+                ctx.drawImage(dura, motion_config.ball_config.ball_pos.x,motion_config.ball_config.ball_pos.y, 30, 30);
                 };
+                
             };
         };
         (function () {
@@ -344,13 +341,17 @@ phina.define("Main", {
                     ball_pos.x = motion_config.ball_config.ball_pos0.x + motion_config.v0 * Math.cos(motion_config.deg * Math.PI / 180) * motion_config.t;
                     ball_pos.y = motion_config.ball_config.ball_pos0.y + motion_config.v0 * Math.sin(motion_config.deg * Math.PI / 180) * motion_config.t - 0.5 * motion_config.g * Math.pow(motion_config.t, 2) * motion_config.t;
 
+                    // ball_pos.y = motion_config.ball_config.ball_pos0.y - 0.5 * motion_config.g * motion_config.t * motion_config.t;
+
+                        // ball_pos.x =180*;
+                        // ball_pos.y =80;
                     // console.log(ball_pos);
                     return ball_pos;
                 };
             };
             obliqueProjectionAnime('ball_canvas', {
                     // globalAlpha: 5,透明軌跡
-                    fillStyle: 'transparent'
+                    fillStyle: 'white'
                 }, {
                     ball_config: {
                         fillStyle: 'black',
@@ -372,7 +373,7 @@ phina.define("Main", {
                     result: 0
                 },
                 // console.log(canvas.v0),
-                function (ball_canvas, motion_config) {
+                function (n_canvas, motion_config) {
                     // 画面動かす
                     // if (motion_config.ball_config.ball_pos.x > canvas.width / 2) {
                     //     var tamesi = canvas.getContext('2d');
@@ -396,9 +397,9 @@ phina.define("Main", {
                         // console.log(motion_config.result);
                         return motion_config.result;
                     }
-                    var aaa = motion_config.result;
+                    var motion_result = motion_config.result;
                     //更新用判別処理
-                    var result_score = aaa;
+                    var result_score = motion_result;
                     var localscore = localStorage.getItem("u-score");
                     if (localscore < result_score) {
                         collection.doc(localStorage.getItem("u-id")).update({
@@ -421,10 +422,20 @@ phina.define("Main", {
                 });
         })();
         var self = this;
+            
+        // window.onload = aaa();
+        // function aaa(motion_config) {
+        //     console.log(motion_config.ball_config.ball_pos.x);
+        //     if (motion_config.ball_config.ball_pos.x >= 10) {
+        //         n_canvas.remove();
+        //         self.exit();
+        //     };
+        // };
+
         Button({
-            text: '➡',
+            text: 'リザルト',
             fontSize: 13,
-            width: 50,
+            width: 70,
             height: 50,
             fill: 'gray'
         }).addChildTo(this).setPosition(this.gridX.span(15), this.gridY.span(14.5)).onpush = function () {
@@ -450,7 +461,6 @@ phina.define("Formimg", {
         this.superInit('formimg');
     }
 });
-
 
 phina.define("Tutorial", {
     superClass: 'Sprite',
@@ -571,7 +581,7 @@ phina.main(function () {
     var app = GameApp({
         // query: '#canvas',
         // Start から開始
-        startLabel: 'result',
+        startLabel: 'title',
         fit: false,
         width: SCREEN_WIDTH,
         height: SCREEN_HEIGHT,
